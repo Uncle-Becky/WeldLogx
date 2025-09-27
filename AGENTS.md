@@ -166,14 +166,13 @@ def get_passes_for_seam(con, seam_id:str)->list[str]:
     return [p.strip() for p in str(df.iloc[0,0]).split("|") if p.strip()]
 
 def validate_entry(con, seam_id, segment_no, pass_name, action, welder_id):
-    # existence checks via FKs; semantic checks here
+    # existence checks are handled by DB foreign keys; semantic checks here
     passes = set(get_passes_for_seam(con, seam_id))
-    assert pass_name in passes, f"Invalid pass '{pass_name}' for seam {seam_id}"
-    assert action in ("Start","Complete"), "Invalid action"
-    # Optional: ensure welder exists
-    w = pd.read_sql_query("SELECT 1 FROM welders WHERE welder_id=? LIMIT 1", con, params=(welder_id,))
-    assert not w.empty, f"Unknown welder_id '{welder_id}'"
-```
+    if pass_name not in passes:
+        raise ValueError(f"Invalid pass '{pass_name}' for seam {seam_id}")
+    if action not in ("Start","Complete"):
+        raise ValueError("Invalid action")
+    # Welder existence is enforced by the FOREIGN KEY constraint on the entries table.
 
 ## F. Recompute (pure, idempotent; derive only)
 ```python
