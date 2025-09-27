@@ -122,14 +122,14 @@ CREATE INDEX IF NOT EXISTS idx_segments_seam ON segments(seam_id);
 ```
 
 ## B. SQLite Migrations (Rollback)
-```sql
 DROP INDEX IF EXISTS idx_entries_core;
 DROP INDEX IF EXISTS idx_segments_seam;
 ALTER TABLE entries RENAME TO entries_new_rolled;
 ALTER TABLE entries_backup RENAME TO entries;
 DROP TABLE IF EXISTS entries_new_rolled;
--- Note: custom FKs remain; test app before continuing.
-```
+DROP TABLE IF EXISTS welders;
+DROP TABLE IF EXISTS _enum_actions;
+-- Note: The app should be tested after rollback to ensure consistency.
 
 ## C. Connection & WAL (Python)
 ```python
