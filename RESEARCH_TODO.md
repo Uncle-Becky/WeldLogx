@@ -1,0 +1,27 @@
+- Domain model
+  - Clarify entities: seams, segments, passes, welders, entries (events).
+  - Event-sourcing vs state tables; choose derivation strategy for status.
+  - Rework/partial work handling; multiple completes; late edits.
+- Data integrity
+  - Add FKs: entries→segments, entries→welders; uniqueness; indexes.
+  - Timestamp types; shift enumeration; controlled vocabulary for passes/actions.
+  - Prevent orphan segments; enforce pass names per seam.
+- Status computation
+  - Define canonical rules: Start before Complete; last Complete wins; derive % from completed passes.
+  - Handling missing Start; duplicates; backfilled entries; timezones.
+- Performance & concurrency
+  - SQLite locking in Streamlit; connection lifecycle; write-through batching; WAL mode.
+  - Indexes for common queries; recompute complexity; caching with `st.cache_data`/`st.cache_resource`.
+- UX/Product
+  - Input validation; dependent dropdowns; quick actions; undo.
+  - KPIs: throughput per shift, average cycle time (Start→Complete), WIP segments, aging.
+  - Visuals: Gantt/step charts, donut accuracy, progress by pass.
+- Security/Config
+  - Environment config; DB path; backups; CSV import/export integrity; PII (names).
+- Testing/DevEx
+  - Pytest fixtures for temp DB; golden datasets; property tests for recompute idempotence.
+  - Lint/format; pre-commit hooks.
+- Deployment
+  - Single-user vs small team; Streamlit Cloud vs container; health checks; backups; rotation.
+- Extensibility
+  - Custom pass sequences per seam; additional roles; Postgres migration strategy (SQLAlchemy).
